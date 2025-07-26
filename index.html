@@ -81,8 +81,9 @@
 
         .radio-group {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             margin-top: 10px;
+            flex-wrap: wrap;
         }
 
         .radio-option {
@@ -177,6 +178,10 @@
                 gap: 10px;
             }
 
+            .radio-option {
+                min-width: 100%;
+            }
+
             .result-item {
                 flex-direction: column;
                 align-items: flex-start;
@@ -213,6 +218,10 @@
                 <div class="radio-option">
                     <input type="radio" id="incl" name="priceType" value="incl">
                     <label for="incl">Inclusief BTW</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="btwOnly" name="priceType" value="btwOnly">
+                    <label for="btwOnly">BTW bedrag</label>
                 </div>
             </div>
         </div>
@@ -281,11 +290,16 @@
                 priceExcl = price;
                 btwAmount = price * btwRate;
                 priceIncl = price + btwAmount;
-            } else {
+            } else if (priceType === 'incl') {
                 // Prijs is inclusief BTW
                 priceIncl = price;
                 priceExcl = price / (1 + btwRate);
                 btwAmount = priceIncl - priceExcl;
+            } else if (priceType === 'btwOnly') {
+                // Alleen BTW bedrag is ingevoerd
+                btwAmount = price;
+                priceExcl = btwAmount / btwRate;
+                priceIncl = priceExcl + btwAmount;
             }
 
             // Update de weergave
