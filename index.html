@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BTW Rekenmachine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .calculator-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: 300;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .radio-option {
+            flex: 1;
+            position: relative;
+        }
+
+        .radio-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .radio-option label {
+            display: block;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            margin-bottom: 0;
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .results {
+            margin-top: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .result-label {
+            font-weight: 500;
+            color: #555;
+        }
+
+        .result-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .btw-amount {
+            color: #28a745;
+        }
+
+        .total-incl {
+            color: #667eea;
+            font-size: 1.3rem;
+        }
+
+        .euro {
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 600px) {
+            .calculator-container {
+                padding: 25px;
+                margin: 10px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            .radio-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .result-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <h1>BTW Rekenmachine</h1>
+        
+        <div class="form-group">
+            <label for="price">Bedrag invoeren:</label>
+            <input type="number" id="price" placeholder="0,00" step="0.01" min="0">
+        </div>
+
+        <div class="form-group">
+            <label>Bedrag is:</label>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="excl" name="priceType" value="excl" checked>
+                    <label for="excl">Exclusief BTW</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="incl" name="priceType" value="incl">
+                    <label for="incl">Inclusief BTW</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>BTW-tarief:</label>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="btw9" name="btwRate" value="9" checked>
+                    <label for="btw9">9%</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="btw21" name="btwRate" value="21">
+                    <label for="btw21">21%</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="results" id="results" style="display: none;">
+            <div class="result-item">
+                <span class="result-label">Prijs exclusief BTW:</span>
+                <span class="result-value" id="priceExcl"><span class="euro">€</span> 0,00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">BTW bedrag:</span>
+                <span class="result-value btw-amount" id="btwAmount"><span class="euro">€</span> 0,00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Prijs inclusief BTW:</span>
+                <span class="result-value total-incl" id="priceIncl"><span class="euro">€</span> 0,00</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const priceInput = document.getElementById('price');
+        const priceTypeRadios = document.querySelectorAll('input[name="priceType"]');
+        const btwRateRadios = document.querySelectorAll('input[name="btwRate"]');
+        const resultsDiv = document.getElementById('results');
+        const priceExclSpan = document.getElementById('priceExcl');
+        const btwAmountSpan = document.getElementById('btwAmount');
+        const priceInclSpan = document.getElementById('priceIncl');
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('nl-NL', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(amount);
+        }
+
+        function calculate() {
+            const price = parseFloat(priceInput.value);
+            
+            if (!price || price <= 0) {
+                resultsDiv.style.display = 'none';
+                return;
+            }
+
+            const priceType = document.querySelector('input[name="priceType"]:checked').value;
+            const btwRate = parseFloat(document.querySelector('input[name="btwRate"]:checked').value) / 100;
+
+            let priceExcl, btwAmount, priceIncl;
+
+            if (priceType === 'excl') {
+                // Prijs is exclusief BTW
+                priceExcl = price;
+                btwAmount = price * btwRate;
+                priceIncl = price + btwAmount;
+            } else {
+                // Prijs is inclusief BTW
+                priceIncl = price;
+                priceExcl = price / (1 + btwRate);
+                btwAmount = priceIncl - priceExcl;
+            }
+
+            // Update de weergave
+            priceExclSpan.innerHTML = `<span class="euro">€</span> ${formatCurrency(priceExcl)}`;
+            btwAmountSpan.innerHTML = `<span class="euro">€</span> ${formatCurrency(btwAmount)}`;
+            priceInclSpan.innerHTML = `<span class="euro">€</span> ${formatCurrency(priceIncl)}`;
+
+            // Toon resultaten met animatie
+            if (resultsDiv.style.display === 'none') {
+                resultsDiv.style.display = 'block';
+                resultsDiv.classList.add('fade-in');
+                setTimeout(() => resultsDiv.classList.remove('fade-in'), 500);
+            }
+        }
+
+        // Event listeners
+        priceInput.addEventListener('input', calculate);
+        priceTypeRadios.forEach(radio => radio.addEventListener('change', calculate));
+        btwRateRadios.forEach(radio => radio.addEventListener('change', calculate));
+
+        // Focus op het invoerveld bij laden
+        window.addEventListener('load', () => {
+            priceInput.focus();
+        });
+    </script>
+</body>
+</html>
